@@ -12,13 +12,4 @@ namespace Demos {
         lunes = 10, martes, miercoles, jueves, viernes, sabado, domingo
     }
 
-    public class Nomina {
-        public enum DiasLaborables : byte {
-            lunes = 10, martes, miercoles, jueves, viernes
-        }
-
-        public DiasLaborables dias() {
-            return DiasLaborables.jueves;
-        }
-    }
 }
