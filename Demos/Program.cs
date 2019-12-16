@@ -22,12 +22,27 @@ namespace Demos {
         /// <returns>un valor</returns>
         /// <exception cref="InvalidOperationException">Porque</exception>
         public static string metodo(int parámetro) {
+            var d = Nomina.DiasLaborables.jueves;
+            var c = 'd';
+            //d = Enum.GetValues(;
+ /*           int? i;
+            Nullable<int> j;
+
+            dynamic s = (new Program());
+            s = 4.ToString();
+            try {
+                s.algo();
+            } catch (Exception e) {
+                
+                throw new Exception("Algo", e);
+            }
+
  #region Depuración
             #if DEBUG
             Console.WriteLine("Esto es una demo");
 #endif
  #endregion
-            return "Algo";
+*/            return "Algo";
         }
 
         public void Dispose() {
