@@ -72,13 +72,23 @@ namespace Demos {
     public class Reina : Pieza {
         public Reina(Color color) : base(color) { }
     }
+
+    public delegate void PromocionEventHandler(object sender, Peon.PromocionEventArg e);
+    //public class PromocionEventArg<T> : EventArgs where T: Pieza, new() {
+    //    public T[] Pieza { get; set; }
+    //    public bool EsValida() {
+    //        return true;
+    //    }
+    //}
+
     public class Peon : Pieza {
-        public class PromocionEvenArg: EventArgs {
+        public class PromocionEventArg: EventArgs {
             public Pieza Pieza { get; set; }
         }
-        public event Action<Object, PromocionEvenArg> Promocion;
+//        public event Action<Object, PromocionEventArg> Promocion;
+        public event PromocionEventHandler Promocion;
 
-        protected void OnPromocion(PromocionEvenArg e) {
+        protected void OnPromocion(PromocionEventArg e) {
             if (Promocion != null)
                 Promocion(this, e);
         }
@@ -86,7 +96,7 @@ namespace Demos {
         public new void Muevete(Tablero t, Movimiento m) {
             if (EsValido(t, m)) {
                 if(m.Final.Fila == 1 || m.Final.Fila == 8) {
-                    var e = new PromocionEvenArg();
+                    var e = new PromocionEventArg();
                     OnPromocion(e);
                     if(e.Pieza == null)
                         throw new JuegoException("Falta la pieza");
@@ -99,6 +109,7 @@ namespace Demos {
     public class Tablero {
         private Pieza[,] tablero = new Pieza[8, 8];
 
+        [Obsolete]
         public void ponPieza(int fila, int col, Pieza p) {
             tablero[fila - 1, col - 1] = p;
         }
@@ -121,8 +132,44 @@ namespace Demos {
             p.Promocion += P_Promocion;
         }
 
-        private void P_Promocion(object sender, Peon.PromocionEvenArg e) {
+        private void P_Promocion(object sender, Peon.PromocionEventArg e) {
             e.Pieza = new Reina(Color.Negro);
         }
     }
+
+    public class Tablero2 {
+        private Dictionary<Posicion, Pieza> tablero = new Dictionary<Posicion, Pieza>(32);
+
+        [Obsolete]
+        public void ponPieza(int fila, int col, Pieza p) {
+            this[fila - 1, col - 1] = p;
+        }
+
+        public Pieza this[int fila, int col] {
+            get {
+                return tablero
+                        .FirstOrDefault(p => p.Key.Fila == fila && p.Key.Columna == col)
+                        .Value;
+            }
+            set {
+                tablero.Add(new Posicion() { Fila = fila - 1, Columna = col - 1 }, value);
+            }
+        }
+
+        public List<Pieza> Consulta() {
+            var consulta = tablero
+                .OrderBy(p => p.Key.Fila)
+                .Select(p => p.Value)
+                .Where(p => p is Peon && p.Color == Color.Negro);
+            // ...
+            var rslt = consulta.Count(p => p.Color == Color.Blanco);
+
+            return consulta
+                .Skip(4)
+                .Take(4)
+                .ToList();
+
+        }
+    }
+
 }
