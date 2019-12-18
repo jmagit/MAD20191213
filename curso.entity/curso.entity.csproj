@@ -77,6 +77,7 @@
     <Compile Include="CustomerAddress.cs">
       <DependentUpon>AWModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="partial\Categoria.partial.cs" />
     <Compile Include="ProductDescription.cs">
       <DependentUpon>AWModel.tt</DependentUpon>
     </Compile>
